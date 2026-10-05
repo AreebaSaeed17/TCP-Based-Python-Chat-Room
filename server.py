@@ -6,8 +6,6 @@ server_ip = socket.gethostbyname(server_name)   # get the ip address of that hos
 port = 8080                                     # using the standard available port
 
 
-print("Your IP Address is:" + str(server_ip))
-
 # bind the created socket with the host
 # this will set up our socket at the server end so now the client can connect to this server
 
