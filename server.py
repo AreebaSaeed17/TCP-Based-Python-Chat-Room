@@ -7,7 +7,7 @@ port = 8080                                     # using the standard available p
 
 
 # bind the created socket with the host
-# this will setup our socket at the host end so now the client can connect to this server
+# this will set up our socket at the server end so now the client can connect to this server
 
 # the bind function takes one argument only so im wrapping the servername and port as one
 server_socket.bind((server_name, port))
@@ -16,9 +16,10 @@ print("The IP Address is:" + server_name)
 print("The IP Address is:" + server_ip)
 print("The port number is: " + str(port))
 
-# now ill configure the socket tos listen for incoming connections\
+# now ill configure the socket tos listen for incoming connections
 cli_name = input("Enter your name: ")
-server_socket.listen(5)             # listen activates the socket to receive incoming connections
+server_socket.listen(1)                                 # listen activates the socket to receive incoming connections
+                                                        # arg passed is 1 which means it will form one connection at a time
 
 # create connection with a client
 # clientsocket creates a new socket
@@ -32,8 +33,17 @@ print("Connection Established.\nConnected from " + client_address[0])
 
 # make the server store the incoming connections
 
-# receive the connction on a buffer of 1024 bytes
-client = (client_socket.recv(1024)).decode()        
+# store the incoming msg into client_msg variable
+# from the client socket that connected to the server, receive upto 1024bytes at a time
+# decode it from bytes to readable language by decode function
+client_msg = (client_socket.recv(1024)).decode()      
+print(client_address + " has connected.\n")
+print("The message received is as follows:\n")
+print(client_msg)
+
+# send name of client back
+client_socket.send(cli_name.encode())
+
 
 
 
