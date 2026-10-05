@@ -1,6 +1,11 @@
 import socket
+import threading
 
-server_socket = socket.socket()                 # create a socket using constructor from socket class
+# create a socket using socket constructor
+# AF_INET specifies address family as IPv4 
+# sock_stream establishes a tcp connection
+server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)          
+
 server_name = socket.gethostname()              # get the name of host machine
 server_ip = socket.gethostbyname(server_name)   # get the ip address of that host by passing ita name
 port = 8080                                     # using the standard available port
@@ -19,26 +24,101 @@ print("The port number is: " + str(port))
 # now ill configure the socket to listen for incoming connections
 print("Enter your name below so that clients can know your name while communicating.\n")
 name_ServerEnd = input("Enter your name: ")
-server_socket.listen(1)                                 # listen activates the socket to receive incoming connections
-                                                        # arg passed is 1 which means it will form one connection at a time
+server_socket.listen()                                 # listen activates the socket to receive incoming connections
 
-# create connection with a client
-# clientsocket creates a new socket
-# client address holds both ip addr and port (ip, port)
-# server_socket.accept( ) will accept that connection onto the socket
 
-client_socket, client_address = server_socket.accept()
+                                                      
+# Any new client that connects:
+    # store names into clients list
+    # take nickname and store it into nicknames list
+clients = []
+nicknames = []
 
-print("The server socket is receiving any incoming connection from " + client_address[0] + "\n")
-print("Connection Established.\nConnected from " + client_address[0] + "\n")
+
+# BROADCAST Function
+    # using this, we can send a msg to all of the clients connected to the server at the same time
+
+# this function takes a msg as a parameter that we'll pass
+# it runs a loop and sends each of the clients from the client list the message passed
+def Broadcast (message):            
+    for client in clients:
+         client.send(message)
+
+
+# RECEIVING Function
+    # this receives msg from a client and then sends it to everyone (basically broadcasts it)
+
+
+def Client_Attempt(client):
+    try:
+        client_msg = server_socket.recv(1024)
+        Broadcast(client_msg)
+
+    # if a client fails, locate it and remove it
+    except:                                                 
+        index_cli = clients.index(client)
+        clients.remove(client)
+
+        print(nickname + " has left this server.\n")
+        nickname = nicknames.index(index_cli)               # remove that client from both the lists
+        nicknames.remove(nickname)
+
+        
+# CONNECTION Function
+    # create connection with a client
+    # clientsocket creates a new socket
+    # client address holds both ip addr and port (ip, port)
+    # server_socket.accept( ) will accept that connection onto the socket
+
+def Connection_Client():
+    while True:
+
+        client_socket, client_address = server_socket.accept()
+
+        print("The server socket is receiving any incoming connection from " + client_address[0] + "\n")
+        print("Connection Established.\nConnected from " + client_address[0] + "\n")
+
+        # ask for client nickname
+        # decode what client sent
+        client_socket.send(("Enter your nickname: ").encode())
+        client_nn = (client_socket.recv(1024)).decode()      
+
+        # make entry for this client
+        clients.append(client_socket)
+        nicknames.append(client_nn)
+
+
+        # tell everyone that someone joined (using broadcast func)
+        # send a custom msg only to that client welcoming it
+        client_socket.send("HI! You have joined the server\n Welcome!\n")
+        Broadcast(client_socket + " has joined our server!\n")
+
+
+        # THREAD
+            # define and run one thread per client
+            # this will allow simultaneous communication
+        
+            # the target for threading is the connection_client func
+            # while the args begin passed is the client_socket
+        thread = threading.Thread(Connection_Client, args=client_socket)
+        thread.start()
+
+
+
+# now call the function and use it
+Connection_Client()
+
+
+
+
+
 
 # make the server store the incoming connections
 
 # store the incoming msg into client_msg variable
 # from the client socket that connected to the server, receive upto 1024bytes at a time
 # decode it from bytes to readable language by decode function
-client_msg = (client_socket.recv(1024)).decode()      
-print(client_address[0]+ " has connected.\n")
+
 print("The message received is as follows:\n")
 print(client_msg)
 
