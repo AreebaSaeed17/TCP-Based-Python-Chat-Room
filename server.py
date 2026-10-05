@@ -9,13 +9,14 @@ port = 8080                                     # using the standard available p
 # bind the created socket with the host
 # this will setup our socket at the host end so now the client can connect to this server
 
-server_socket.bind(server_name, server_ip)
+# the bind function takes one argument only so im wrapping the servername and port as one
+server_socket.bind((server_name, port))
 print ("Socket at host end binded successfully.\n")     # print a msg for confirmation
 print("The IP Address is:" + server_name)
 print("The IP Address is:" + server_ip)
-print("The port number is:" + port)
+print("The port number is: " + str(port))
 
-# now ill configure the socket to listen for incoming connections\
+# now ill configure the socket tos listen for incoming connections\
 cli_name = input("Enter your name: ")
 server_socket.listen(5)             # listen activates the socket to receive incoming connections
 
