@@ -10,14 +10,15 @@ port = 8080                                     # using the standard available p
 # this will set up our socket at the server end so now the client can connect to this server
 
 # the bind function takes one argument only so im wrapping the servername and port as one
-server_socket.bind((server_name, port))
+server_socket.bind((server_ip, port))
 print ("Socket at host end binded successfully.\n")     # print a msg for confirmation
 print("The IP Address is:" + server_name)
 print("The IP Address is:" + server_ip)
 print("The port number is: " + str(port))
 
-# now ill configure the socket tos listen for incoming connections
-cli_name = input("Enter your name: ")
+# now ill configure the socket to listen for incoming connections
+print("Enter your name below so that clients can know your name while communicating.\n")
+name_ServerEnd = input("Enter your name: ")
 server_socket.listen(1)                                 # listen activates the socket to receive incoming connections
                                                         # arg passed is 1 which means it will form one connection at a time
 
@@ -28,8 +29,8 @@ server_socket.listen(1)                                 # listen activates the s
 
 client_socket, client_address = server_socket.accept()
 
-print("The server socket is receiving any incoming connection from " + client_address[0])
-print("Connection Established.\nConnected from " + client_address[0])
+print("The server socket is receiving any incoming connection from " + client_address[0] + "\n")
+print("Connection Established.\nConnected from " + client_address[0] + "\n")
 
 # make the server store the incoming connections
 
@@ -37,12 +38,21 @@ print("Connection Established.\nConnected from " + client_address[0])
 # from the client socket that connected to the server, receive upto 1024bytes at a time
 # decode it from bytes to readable language by decode function
 client_msg = (client_socket.recv(1024)).decode()      
-print(client_address + " has connected.\n")
+print(client_address[0]+ " has connected.\n")
 print("The message received is as follows:\n")
 print(client_msg)
 
-# send name of client back
-client_socket.send(cli_name.encode())
+# send name of server back
+client_socket.send(name_ServerEnd.encode())
+
+
+# Now delievering msgs
+while True:
+    msg_fromServer = input("ME: ")
+    client_socket.send(msg_fromServer.encode())         # sending encoded msg to client
+
+    msg_fromClient = (client_socket.recv(1024)).decode()  # receive and decode msg from client
+    print("Client: " + msg_fromClient)
 
 
 
