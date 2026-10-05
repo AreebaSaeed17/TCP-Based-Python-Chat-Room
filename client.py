@@ -2,7 +2,7 @@ import socket
 
 client_socket = socket.socket()               # create the client socket
 client_ip = socket.gethostbyname()            # get host ip for future use
-port_Server = 8080                          # connect to server on this port
+port_Server = 8080                            # connect to server on this port
 
 
 # connect to the server
@@ -37,7 +37,12 @@ while True:
 
     # now send a reply back
     my_reply = input("Enter your response: ")
-    client_socket.send(my_reply.encode())
+
+    if my_reply.lower() == 'exit':  
+        print("Ending the chat...")                  # if client wants to end
+        break
+
+    client_socket.send(my_reply.encode())           # if user doesnt want to end convo keep sending 
 
 
 client_socket.close()

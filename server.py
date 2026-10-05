@@ -49,11 +49,18 @@ client_socket.send(name_ServerEnd.encode())
 # Now delievering msgs
 while True:
     msg_fromServer = input("ME: ")
-    client_socket.send(msg_fromServer.encode())         # sending encoded msg to client
+    client_socket.send(msg_fromServer.encode())            # sending encoded msg to client
 
-    msg_fromClient = (client_socket.recv(1024)).decode()  # receive and decode msg from client
+    if msg_fromServer.lower() == 'exit':
+        print("Closing server...")                         # if server wants to end convo
+        break
+
+    msg_fromClient = (client_socket.recv(1024)).decode()   # receive and decode msg from client
     print("Client: " + msg_fromClient)
 
+    if not msg_fromClient:
+        print("Client disconnected abruptly.")             # sudden disconnection
+        break
 
 
 
