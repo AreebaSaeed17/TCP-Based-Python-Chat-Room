@@ -24,7 +24,16 @@ server_socket.listen(5)             # listen activates the socket to receive inc
 # clientsocket creates a new socket
 # client address holds both ip addr and port (ip, port)
 # server_socket.accept( ) will accept that connection onto the socket
+
 client_socket, client_address = server_socket.accept()
 
 print("The server socket is receiving any incoming connection from " + client_address[0])
-print("Connected from " + client_address[0])
+print("Connection Established.\nConnected from " + client_address[0])
+
+# make the server store the incoming connections
+
+# receive the connction on a buffer of 1024 bytes
+client = (client_socket.recv(1024)).decode()        
+
+
+
