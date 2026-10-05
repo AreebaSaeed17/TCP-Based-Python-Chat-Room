@@ -1,6 +1,4 @@
 import socket
-import sys
-import time
 
 client_socket = socket.socket()               # create the client socket
 client_ip = socket.gethostbyname()            # get host ip for future use
