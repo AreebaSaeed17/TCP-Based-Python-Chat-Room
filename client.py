@@ -1,6 +1,8 @@
 import socket
+import threading
 
-client_socket = socket.socket()               # create the client socket
+# create the client socket in the same format as the server socket
+client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)      
 client_ip = socket.gethostbyname()            # get host ip for future use
 port_Server = 8080                            # connect to server on this port
 
