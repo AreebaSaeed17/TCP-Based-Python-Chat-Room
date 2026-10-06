@@ -59,6 +59,7 @@ def Client_Attempt(client_socket, client_nickname):
                 raise Exception("Disconnected")
             
             formatted_msg_for_broadcast = (f"{client_nickname}: {decode_clientmsg}").encode()
+           
             Broadcast(formatted_msg_for_broadcast, sender_socket=client_socket)
 
         # if a client fails, locate it and remove it
