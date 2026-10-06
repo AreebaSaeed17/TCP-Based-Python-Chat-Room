@@ -111,7 +111,7 @@ def Client_Attempt(client_socket, client_nickname):
             elif decode_clientmsg.lower() == '/users':
                 with client_lock:
                     online_list = ", ".join(clients.keys())
-                    client_socket.send(f"Online users: {online_list}\n".encode())
+                    client_socket.send(f"\nOnline users: {online_list}\n\n".encode())
 
             
             # send the received msg to all other connected ppl
