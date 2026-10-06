@@ -65,7 +65,8 @@ def Receive_Message():
                 break
 
             # print whatever msg has been recieved from server
-            print("\nMessage from Server: \n" + message_fromServer.strip())
+            print("\n" + message_fromServer.strip())
+            print("> ", end="", flush=True)
 
         except:
             break
@@ -78,7 +79,7 @@ thread.start()
 
 while True:
     try:
-        my_reply = input("Your response: ")
+        my_reply = input("> ")
 
         # if client want to quit
         if my_reply.strip() == '/quit':  
@@ -88,7 +89,7 @@ while True:
         # if client types a simple msg then send it over
         else:   
             client_socket.send(my_reply.encode())
-            print("Your Response: ", end="", flush=True)
+            print(end="", flush=True)
 
     except (KeyboardInterrupt, EOFError):
         print("Error!!\n")
