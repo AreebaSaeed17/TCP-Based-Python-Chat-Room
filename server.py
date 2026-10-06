@@ -9,7 +9,7 @@ server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server_name = socket.gethostname()              # get the name of host machine
 server_ip = socket.gethostbyname(server_name)   # get the ip address of that host by passing ita name
 port = 8080                                     # using the standard available port
-
+name_ServerEnd = input("Enter your server nickname: ")
 
 # the bind function takes one argument only so im wrapping the servername and port as one
 server_socket.bind((server_ip, port))
@@ -105,7 +105,7 @@ def Connection():
 
         # Make sure username isn't already taken
         with client_lock:
-            if (client_nn in clients) or (client_nn.lower() == 'server'):
+            if client_nn.lower() == 'server' or client_nn.lower() == name_ServerEnd.lower():
                 client_socket.send("ERROR: Username taken or invalid. Disconnecting...\n".encode())
                 client_socket.close()
                 continue
@@ -120,52 +120,16 @@ def Connection():
 
 
         # THREAD
-            # define and run one thread per client
+            # define and run one thread per client in the background
             # this will allow simultaneous communication
         
-            # the target for threading is the connection_client func
+            # the target for threading is the client_attempt func bcs that it where the client is sending msgs
             # while the args begin passed is the client_socket
-        thread = threading.Thread(Connection_Client, args=client_socket)
+        thread = threading.Thread(target=Client_Attempt, args=(client_socket, client_nn))
         thread.start()
 
 
 
 # now call the function and use it
-Connection_Client()
-
-
-
-
-
-
-# make the server store the incoming connections
-
-# store the incoming msg into client_msg variable
-# from the client socket that connected to the server, receive upto 1024bytes at a time
-# decode it from bytes to readable language by decode function
-
-print("The message received is as follows:\n")
-print(client_msg)
-
-# send name of server back
-client_socket.send(name_ServerEnd.encode())
-
-
-# Now delievering msgs
-while True:
-    msg_fromServer = input("ME: ")
-    client_socket.send(msg_fromServer.encode())            # sending encoded msg to client
-
-    if msg_fromServer.lower() == 'exit':
-        print("Closing server...")                         # if server wants to end convo
-        break
-
-    msg_fromClient = (client_socket.recv(1024)).decode()   # receive and decode msg from client
-    print("Client: " + msg_fromClient)
-
-    if not msg_fromClient:
-        print("Client disconnected abruptly.")             # sudden disconnection
-        break
-
-
+Connection()
 
