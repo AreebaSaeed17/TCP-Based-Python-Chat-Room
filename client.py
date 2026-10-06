@@ -39,8 +39,13 @@ except:
     print("Failed to connect to the server. Please check the IP and try again.")
     exit()
 
+# server needs nickname so prompt will appear here
+server_prompt = client_socket.recv(1024).decode()
+print(server_prompt) 
+
 # server is waiting for nickname, send it
 client_socket.send(client_name.encode())
+
 
 # RECEIVEMESSAGE FUNCTION
     # this is the baseline of this process
@@ -57,7 +62,6 @@ def Receive_Message():
 
             # print whatever msg has been recieved from server
             print("Message from Server: " + message_fromServer + "\n") 
-            print("Enter your response: ", end="", flush=True)              # flush the console
 
         except:
             break

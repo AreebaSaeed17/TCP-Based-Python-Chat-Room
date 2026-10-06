@@ -13,10 +13,10 @@ name_ServerEnd = input("Enter your server nickname: ")
 
 # the bind function takes one argument only so im wrapping the servername and port as one
 server_socket.bind((server_ip, port))
-print ("Socket at host end binded successfully.\n")     # print a msg for confirmation
-print("The IP Address is:" + server_name)
+print ("\nSocket at host end binded successfully.\n")     # print a msg for confirmation
+print("The Device name is:" + server_name)
 print("The IP Address is:" + server_ip)
-print("The port number is: " + str(port))
+print("The port number is: " + str(port)+"\n")
 
 # make the server listen for incoming connections from clients on its socket
 server_socket.listen()                                
