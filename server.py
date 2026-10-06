@@ -21,42 +21,77 @@ print("The port number is: " + str(port))
 # make the server listen for incoming connections from clients on its socket
 server_socket.listen()                                
 
+# creating a client dictionary to keep record of connected clients
+clients = {}                           # { "username": client_socket }
+client_lock = threading.Lock()         # keeps the dictionary from breaking incase of multiple new clients simultaneously being added
                                                       
-# Any new client that connects:
-    # store names into clients list
-    # take nickname and store it into nicknames list
-clients = []
-nicknames = []
-
 
 # BROADCAST Function
     # using this, we can send a msg to all of the clients connected to the server at the same time
 
-# this function takes a msg as a parameter that we'll pass
-# it runs a loop and sends each of the clients from the client list the message passed
-def Broadcast (message):            
-    for client in clients:
-         client.send(message)
+# it takes the msg as an argument
+# it also takes in who sent it as an arg
+# we want to share that msg to everyone connected but not back to the person who sent it
+def Broadcast (message, sender_socket = None):   
+    with client_lock:
+        for username, client_socket in clients.items():     # loop through each client from dictionary
+            try:
+                if client_socket != sender_socket:          # if the client aint the one who sent the msg, it should receive the msg
+                    client_socket.send(message)
+            except:
+                pass                                
 
-
+    
 # Client_Atempt Function
     # this receives msg from a client and then sends it to everyone (basically broadcasts it)
+    # this keeps running infinitely so that it can keep receiving connections
+    # this runs in the bg for each client
+
+def Client_Attempt(client_socket, client_nickname):
+    while True:
+        try:
+            # receive the msg from client
+            client_msg = client_socket.recv(1024)
+            decode_clientmsg = client_msg.decode()
+            
+            if not client_msg:
+            # If recv returns empty bytes, the client disconnected gracefully
+                raise Exception("Disconnected")
+            
+            formatted_msg_for_broadcast = (f"{client_nickname}: {decode_clientmsg}").encode()
+            Broadcast(formatted_msg_for_broadcast, sender_socket=client_socket)
+
+        # if a client fails, locate it and remove it
+        except:                                                 
+            index_cli = clients.index(client)
+            clients.remove(client)
+
+            print(nickname + " has left this server.\n")
+            nickname = nicknames.index(index_cli)               # remove that client from both the lists
+            nicknames.remove(nickname)
 
 
-def Client_Attempt(client):
-    try:
-        client_msg = server_socket.recv(1024)
-        Broadcast(client_msg)
 
-    # if a client fails, locate it and remove it
-    except:                                                 
-        index_cli = clients.index(client)
-        clients.remove(client)
 
-        print(nickname + " has left this server.\n")
-        nickname = nicknames.index(index_cli)               # remove that client from both the lists
-        nicknames.remove(nickname)
+def Client_Attempt(client_socket, client_nickname):
+    # Loop infinitely to keep receiving messages from this specific client
+    while True:
+        try:
+            # Receive data directly from the CLIENT socket, not the server socket
+            client_msg_bytes = client_socket.recv(1024)
+            
+            if not client_msg_bytes:
+                # If recv returns empty bytes, the client disconnected gracefully
+                raise Exception("Disconnected")
 
+            # Decode message to see what they typed
+            incoming_text = client_msg_bytes.decode().strip()
+            
+            # Format the message nicely for everyone else
+            formatted_broadcast = f"{client_nickname}: {incoming_text}".encode()
+            Broadcast(formatted_broadcast, sender_socket=client_socket)
+
+        # If a client fails or disconnects, locate it and remove it cleanly
         
 # CONNECTION Function
     # create connection with a client
