@@ -9,6 +9,11 @@ server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server_name = socket.gethostname()              # get the name of host machine
 server_ip = socket.gethostbyname(server_name)   # get the ip address of that host by passing ita name
 port = 8080                                     # using the standard available port
+
+print("\n_______________________________________________________________________________\n")
+print("\n.................... Welcome to the TCP Chat Room Program .....................\n")
+print("\n.............................. You are the Server..............................\n")
+print("\n_______________________________________________________________________________\n")
 name_ServerEnd = input("Enter your server nickname: ")
 
 # the bind function takes one argument only so im wrapping the servername and port as one
@@ -164,7 +169,7 @@ def Connection():
 
         # tell everyone that someone joined (using broadcast func)
         # send a custom msg only to that client welcoming it
-        client_socket.send("\nWelcome to the Server!!\n")
+        client_socket.send(("\nWelcome to the Server!!\n").encode())
         join_notification = f"{client_nn} has joined our server!\n".encode()
         Broadcast(join_notification, sender_socket=client_socket)
 
