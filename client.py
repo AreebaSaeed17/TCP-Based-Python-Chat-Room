@@ -1,6 +1,5 @@
 import socket
 import threading
-import sys
 
 # create the client socket in the same format as the server socket
 # AF_INET specifies the address family as IPv4 
@@ -59,5 +58,24 @@ def Receive_Message():
 # while I'm typing, the other client's msg can get displayed onto my screen without interrupting my typing
 thread = threading.Thread(target = Receive_Message, daemon=bool)
 thread.start()
+
+
+while True:
+    try:
+        my_reply = input("Enter your response: ")
+
+        # if client want to quit
+        if my_reply.strip() == '/quit':  
+            print("Exiting the chat Room.\nEnding the chat...")                  
+            break
+
+        # if client types a simple msg then send it over
+        else:   
+            client_socket.send(my_reply.encode())
+
+    except (KeyboardInterrupt, EOFError):
+        print("Error!!\n")
+        break
+
 
 client_socket.close()
