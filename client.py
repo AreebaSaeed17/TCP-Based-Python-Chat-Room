@@ -66,6 +66,7 @@ def Receive_Message():
 
             # print whatever msg has been recieved from server
             print("Message from Server: " + message_fromServer + "\n") 
+            print("Your Response: ", end="", flush=True)
 
         except:
             break
@@ -78,7 +79,7 @@ thread.start()
 
 while True:
     try:
-        my_reply = input("Your Response: ")
+        my_reply = input()
 
         # if client want to quit
         if my_reply.strip() == '/quit':  

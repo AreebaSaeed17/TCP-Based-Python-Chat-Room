@@ -116,8 +116,9 @@ def Client_Attempt(client_socket, client_nickname):
             
             # send the received msg to all other connected ppl
             # print the sender name and send it onto the client socket
-            formatted_msg_for_broadcast = (f"{client_nickname}: {decode_clientmsg}").encode()
-            Broadcast(formatted_msg_for_broadcast, sender_socket=client_socket)
+            else:
+                formatted_msg_for_broadcast = (f"{client_nickname}: {decode_clientmsg}").encode()
+                Broadcast(formatted_msg_for_broadcast, sender_socket=client_socket)
 
         # incase the user hasnt communicated, it has disconnected
         # remove that particular user from the dictionary
