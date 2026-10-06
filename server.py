@@ -35,14 +35,16 @@ client_lock = threading.Lock()         # keeps the dictionary from breaking inca
 def Broadcast (message, sender_socket = None):   
     with client_lock:
         for username, client_socket in clients.items():     # loop through each client from dictionary
+
             try:
                 if client_socket != sender_socket:          # if the client aint the one who sent the msg, it should receive the msg
                     client_socket.send(message)
+
             except:
                 pass                                
 
     
-# Client_Atempt Function
+# ClIENT ATTEMPT Function
     # this receives msg from a client and then sends it to everyone (basically broadcasts it)
     # this keeps running infinitely so that it can keep receiving connections
     # this runs in the bg for each client
@@ -55,7 +57,6 @@ def Client_Attempt(client_socket, client_nickname):
             if not client_msg:
                         # If recv returns empty bytes, the client has disconnected
                             raise Exception("Disconnected")
-            
             # if msg was existent, decode to save it
             decode_clientmsg = client_msg.decode()
             
@@ -68,21 +69,30 @@ def Client_Attempt(client_socket, client_nickname):
         # remove that particular user from the dictionary
         # with client_lock ensures that this can be done for multiple users at the same time
         except:
-             with client_lock:
+            with client_lock:
                 if client_nickname in clients:
                     del clients[client_nickname]
-             
 
-        
+            # close the socket for that client
+            client_socket.close()
+            print(f"{client_nickname} has left the server.\n")
+            
+            # Notify everyone else that they left
+            broadcast_leave = (f"{client_nickname} has left the chat.\n").encode()
+            Broadcast(broadcast_leave)
+            break                                   # destroy the thread for this user
+
 # CONNECTION Function
     # create connection with a client
     # clientsocket creates a new socket
     # client address holds both ip addr and port (ip, port)
     # server_socket.accept( ) will accept that connection onto the socket
 
-def Connection_Client():
+def Connection():
+    print("The server is actively listening and awaiting connections.\n")
     while True:
 
+        # accept connections
         client_socket, client_address = server_socket.accept()
 
         print("The server socket is receiving any incoming connection from " + client_address[0] + "\n")
@@ -91,12 +101,17 @@ def Connection_Client():
         # ask for client nickname
         # decode what client sent
         client_socket.send(("Enter your nickname: ").encode())
-        client_nn = (client_socket.recv(1024)).decode()      
+        client_nn = (client_socket.recv(1024)).decode().strip()   
 
-        # make entry for this client
-        clients.append(client_socket)
-        nicknames.append(client_nn)
-
+        # Make sure username isn't already taken
+        with client_lock:
+            if (client_nn in clients) or (client_nn.lower() == 'server'):
+                client_socket.send("ERROR: Username taken or invalid. Disconnecting...\n".encode())
+                client_socket.close()
+                continue
+      
+        # if nickname is acceptable
+        clients[client_nn] = client_socket
 
         # tell everyone that someone joined (using broadcast func)
         # send a custom msg only to that client welcoming it
