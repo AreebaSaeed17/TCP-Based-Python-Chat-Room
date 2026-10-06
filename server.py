@@ -51,6 +51,7 @@ def Broadcast (message, sender_socket = None):
 
 def Client_Attempt(client_socket, client_nickname):
     while True:
+        # try-except block of attempt to send msg
         try:
             # receive the msg from client
             client_msg = client_socket.recv(1024)
@@ -58,7 +59,45 @@ def Client_Attempt(client_socket, client_nickname):
                         # If recv returns empty bytes, the client has disconnected
                             raise Exception("Disconnected")
             # if msg was existent, decode to save it
-            decode_clientmsg = client_msg.decode()
+            decode_clientmsg = client_msg.decode().strip()
+
+
+            # IMPLEMENTATION OF PRIVATE MESSAGING
+            # if the msg starts with @ that means it is a private msg
+            # [1:] this removes the first char or the index 0 thing
+            # split('', 1) 
+                # finds the first space '' and splits the string there
+                # now the string has been split into username, text 
+
+
+            # if the string's first element is @, then either it has full msg 
+                # try block runs
+            # if user did type @ username but forgot to type msg
+                # except block runs
+            # this try-except block is for @ only
+            if decode_clientmsg.startswith('@'):
+                try:
+                    target_username, private_text = decode_clientmsg[1:].split(' ', 1)
+    
+                    # Look up the target user's socket inside clients dictionary
+                    with client_lock:
+                        # locate the socket of the client who has to receive that private msg
+                        if target_username in clients:
+                            target_socket = clients[target_username]
+
+                        # if such a user found,
+                        # Format the private message 
+                            formatted_private = f"[PRIVATE DM from {client_nickname}]: {private_text}\n".encode()
+                            target_socket.send(formatted_private)
+
+                        # If the user doesn't exist, notify ONLY the sender
+                        else:
+                            error_msg = f"ERROR: User '{target_username}' is offline or unavailable.\n".encode()
+                            client_socket.send(error_msg)
+
+                except ValueError:
+                    client_socket.send("ERROR: Invalid private message format. Use: @username message\n".encode())
+
             
             # send the received msg to all other connected ppl
             # print the sender name and send it onto the client socket
