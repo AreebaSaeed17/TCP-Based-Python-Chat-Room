@@ -11,9 +11,6 @@ server_ip = socket.gethostbyname(server_name)   # get the ip address of that hos
 port = 8080                                     # using the standard available port
 
 
-# bind the created socket with the host
-# this will set up our socket at the server end so now the client can connect to this server
-
 # the bind function takes one argument only so im wrapping the servername and port as one
 server_socket.bind((server_ip, port))
 print ("Socket at host end binded successfully.\n")     # print a msg for confirmation
@@ -21,11 +18,8 @@ print("The IP Address is:" + server_name)
 print("The IP Address is:" + server_ip)
 print("The port number is: " + str(port))
 
-# now ill configure the socket to listen for incoming connections
-print("Enter your name below so that clients can know your name while communicating.\n")
-name_ServerEnd = input("Enter your name: ")
-server_socket.listen()                                 # listen activates the socket to receive incoming connections
-
+# make the server listen for incoming connections from clients on its socket
+server_socket.listen()                                
 
                                                       
 # Any new client that connects:
@@ -45,7 +39,7 @@ def Broadcast (message):
          client.send(message)
 
 
-# RECEIVING Function
+# Client_Atempt Function
     # this receives msg from a client and then sends it to everyone (basically broadcasts it)
 
 
