@@ -52,47 +52,27 @@ def Client_Attempt(client_socket, client_nickname):
         try:
             # receive the msg from client
             client_msg = client_socket.recv(1024)
+            if not client_msg:
+                        # If recv returns empty bytes, the client has disconnected
+                            raise Exception("Disconnected")
+            
+            # if msg was existent, decode to save it
             decode_clientmsg = client_msg.decode()
             
-            if not client_msg:
-            # If recv returns empty bytes, the client disconnected gracefully
-                raise Exception("Disconnected")
-            
+            # send the received msg to all other connected ppl
+            # print the sender name and send it onto the client socket
             formatted_msg_for_broadcast = (f"{client_nickname}: {decode_clientmsg}").encode()
-           
             Broadcast(formatted_msg_for_broadcast, sender_socket=client_socket)
 
-        # if a client fails, locate it and remove it
-        except:                                                 
-            index_cli = clients.index(client)
-            clients.remove(client)
+        # incase the user hasnt communicated, it has disconnected
+        # remove that particular user from the dictionary
+        # with client_lock ensures that this can be done for multiple users at the same time
+        except:
+             with client_lock:
+                if client_nickname in clients:
+                    del clients[client_nickname]
+             
 
-            print(nickname + " has left this server.\n")
-            nickname = nicknames.index(index_cli)               # remove that client from both the lists
-            nicknames.remove(nickname)
-
-
-
-
-def Client_Attempt(client_socket, client_nickname):
-    # Loop infinitely to keep receiving messages from this specific client
-    while True:
-        try:
-            # Receive data directly from the CLIENT socket, not the server socket
-            client_msg_bytes = client_socket.recv(1024)
-            
-            if not client_msg_bytes:
-                # If recv returns empty bytes, the client disconnected gracefully
-                raise Exception("Disconnected")
-
-            # Decode message to see what they typed
-            incoming_text = client_msg_bytes.decode().strip()
-            
-            # Format the message nicely for everyone else
-            formatted_broadcast = f"{client_nickname}: {incoming_text}".encode()
-            Broadcast(formatted_broadcast, sender_socket=client_socket)
-
-        # If a client fails or disconnects, locate it and remove it cleanly
         
 # CONNECTION Function
     # create connection with a client
