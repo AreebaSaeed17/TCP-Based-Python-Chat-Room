@@ -35,6 +35,9 @@ except:
 # server is waiting for nickname, send it
 client_socket.send(client_name.encode())
 
+# RECEIVEMESSAGE FUNCTION
+    # this is the baseline of this process
+
 def Receive_Message():
     while True:
         try:
@@ -47,23 +50,14 @@ def Receive_Message():
 
             # print whatever msg has been recieved from server
             print("Message from Server: " + message_fromServer + "\n") 
+            print("Enter your response: ", end="", flush=True)              # flush the console
 
-    # now send a reply back
-    my_reply = input("Enter your response: ")
-
-    if my_reply.lower() == 'exit':  
-        print("Ending the chat...")                  # if client wants to end
-        break
-
-    client_socket.send(my_reply.encode())           # if user doesnt want to end convo keep sending 
-
-# Instantly display whatever lands, whether it's a broadcast or private message
-            print("\n" + message_from_server)
-            # Reprint the input prompt marker so the UI stays clean while typing
-            print("Enter your response: ", end="", flush=True)
-            
         except:
-            # If the socket gets closed by our main thread, exit cleanly
             break
+
+# the requirement of the program is that the clients are able to send and receive msgs concurrently
+# while I'm typing, the other client's msg can get displayed onto my screen without interrupting my typing
+thread = threading.Thread(target = Receive_Message, daemon=bool)
+thread.start()
 
 client_socket.close()
