@@ -108,7 +108,6 @@ def Client_Attempt(client_socket, client_nickname):
                     online_list = ", ".join(clients.keys())
                     client_socket.send(f"Online users: {online_list}\n".encode())
 
-
             
             # send the received msg to all other connected ppl
             # print the sender name and send it onto the client socket
@@ -165,8 +164,9 @@ def Connection():
 
         # tell everyone that someone joined (using broadcast func)
         # send a custom msg only to that client welcoming it
-        client_socket.send(("HI! You have joined the server\n Welcome!\n").encode())
-        Broadcast((client_socket + " has joined our server!\n").encode())
+        client_socket.send("\nWelcome to the Server!!\n")
+        join_notification = f"{client_nn} has joined our server!\n".encode()
+        Broadcast(join_notification, sender_socket=client_socket)
 
 
         # THREAD
