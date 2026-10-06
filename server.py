@@ -160,7 +160,7 @@ def Connection():
 
         # Make sure username isn't already taken
         with client_lock:
-            if client_nn.lower() == 'server' or client_nn.lower() == name_ServerEnd.lower():
+            if client_nn in clients or client_nn.lower() == 'server' or client_nn.lower() == name_ServerEnd.lower():
                 client_socket.send("ERROR: Username taken or invalid. Disconnecting...\n".encode())
                 client_socket.close()
                 continue
@@ -170,7 +170,7 @@ def Connection():
 
         # tell everyone that someone joined (using broadcast func)
         # send a custom msg only to that client welcoming it
-        client_socket.send(("\n________ Welcome to the Server!! ________\n").encode())
+        client_socket.send(("\n________ Welcome to the Server!! \n").encode())
         join_notification = f"{client_nn} has joined our server!\n".encode()
         Broadcast(join_notification, sender_socket=client_socket)
 
