@@ -26,6 +26,15 @@ print("\nAttempting to connect to " + str(server_ip) +" from " + str(client_ip) 
 try:
     client_socket.connect((server_ip, port_Server))
     print("Successfully connected to the server!\n")
+
+    # once client connects, give them the instructions
+    print("______________ CHAT ROOM GUIDE ______________")
+    print("• Type anything normally to broadcast to everyone.")
+    print("• Type @username message for a private chat.")
+    print("• Type /users to see who is currently online.")
+    print("• Type /quit to leave the chat room gracefully.")
+    print("____________________________________________\n")
+
 except:
     print("Failed to connect to the server. Please check the IP and try again.")
     exit()
