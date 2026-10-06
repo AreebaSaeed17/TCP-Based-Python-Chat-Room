@@ -14,8 +14,8 @@ name_ServerEnd = input("Enter your server nickname: ")
 # the bind function takes one argument only so im wrapping the servername and port as one
 server_socket.bind((server_ip, port))
 print ("\nSocket at host end binded successfully.\n")     # print a msg for confirmation
-print("The Device name is:" + server_name)
-print("The IP Address is:" + server_ip)
+print("The Device name is: " + server_name)
+print("The IP Address is: " + server_ip)
 print("The port number is: " + str(port)+"\n")
 
 # make the server listen for incoming connections from clients on its socket
@@ -165,8 +165,8 @@ def Connection():
 
         # tell everyone that someone joined (using broadcast func)
         # send a custom msg only to that client welcoming it
-        client_socket.send(("HI! You have joined the server\n Welcome!\n")).encode()
-        Broadcast((client_socket + " has joined our server!\n")).encode()
+        client_socket.send(("HI! You have joined the server\n Welcome!\n").encode())
+        Broadcast((client_socket + " has joined our server!\n").encode())
 
 
         # THREAD

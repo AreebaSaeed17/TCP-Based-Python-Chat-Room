@@ -10,7 +10,7 @@ client_ip = socket.gethostbyname(socket.gethostname())            # get host ip 
 port_Server = 8080                                                  # connect to server on this port
 
 # connect to the server
-print("Your IP Address is " + str(client_ip))
+print("Your IP Address is: " + str(client_ip))
 print("Enter your name below so that server can know your name while communicating.\n")
 client_name = input("Enter your name: ")
 server_ip = input("Enter the IP of the server you want to connect to: ")
