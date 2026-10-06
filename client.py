@@ -18,6 +18,7 @@ server_name = input("What is the name of the host you are trying to talk to? ")
 
 
 # print a msg for better User Interface
+print("\n_______________________________________________________________________________\n")
 print("\nAttempting to connect to " + str(server_ip) +" from " + str(client_ip) +".....\n")
 
 
