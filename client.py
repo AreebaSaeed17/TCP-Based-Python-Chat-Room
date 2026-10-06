@@ -73,13 +73,13 @@ def Receive_Message():
 
 # the requirement of the program is that the clients are able to send and receive msgs concurrently
 # while I'm typing, the other client's msg can get displayed onto my screen without interrupting my typing
-thread = threading.Thread(target = Receive_Message, daemon=bool)
+thread = threading.Thread(target = Receive_Message, daemon=True)
 thread.start()
 
 
 while True:
     try:
-        my_reply = input("Enter your response: ")
+        my_reply = input()
 
         # if client want to quit
         if my_reply.strip() == '/quit':  
