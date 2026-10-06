@@ -46,7 +46,6 @@ except:
 
 # server needs nickname so prompt will appear here
 server_prompt = client_socket.recv(1024).decode()
-print(server_prompt) 
 
 # server is waiting for nickname, send it
 client_socket.send(client_name.encode())
@@ -79,7 +78,7 @@ thread.start()
 
 while True:
     try:
-        my_reply = input()
+        my_reply = input("Your Response: ")
 
         # if client want to quit
         if my_reply.strip() == '/quit':  
