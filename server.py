@@ -166,7 +166,7 @@ def Connection():
         # tell everyone that someone joined (using broadcast func)
         # send a custom msg only to that client welcoming it
         client_socket.send(("HI! You have joined the server\n Welcome!\n")).encode()
-        Broadcast(client_socket + " has joined our server!\n")
+        Broadcast((client_socket + " has joined our server!\n")).encode()
 
 
         # THREAD
