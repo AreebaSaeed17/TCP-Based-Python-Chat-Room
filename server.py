@@ -98,6 +98,17 @@ def Client_Attempt(client_socket, client_nickname):
                 except ValueError:
                     client_socket.send("ERROR: Invalid private message format. Use: @username message\n".encode())
 
+
+            # if client wants to know the active users
+            # access the client usernames from the dictionary 
+            # join the names via ,
+            # send only to the one who requested
+            elif decode_clientmsg.lower() == '/users':
+                with client_lock:
+                    online_list = ", ".join(clients.keys())
+                    client_socket.send(f"Online users: {online_list}\n".encode())
+
+
             
             # send the received msg to all other connected ppl
             # print the sender name and send it onto the client socket
