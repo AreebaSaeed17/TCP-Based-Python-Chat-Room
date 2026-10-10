@@ -112,6 +112,12 @@ def Client_Attempt(client_socket, client_nickname):
                 with client_lock:
                     online_list = ", ".join(clients.keys())
                     client_socket.send(f"\nOnline users: {online_list}\n\n".encode())
+            
+            # CATCH ALL OTHER INVALID COMMANDS
+            # If it starts with '/' but wasn't caught by the valid commands above
+            elif decode_clientmsg.startswith('/'):
+                # Send an error message back ONLY to the sender who made the mistake
+                client_socket.send("Error: Invalid command. Type a valid option from the guide.\n".encode())
 
             
             # send the received msg to all other connected ppl
